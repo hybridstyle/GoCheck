@@ -46,8 +46,10 @@ func main() {
 		os.Exit(1)
 	}
 
+	//	anony := verifyproxy("222.85.103.104:81", 20, "123")
+	//	fmt.Println("anony:", anony)
 
-
+	//	if false {
 	cleanpool := make(chan string, cleanpoolsize)
 	for i := 0; i < cleanthread; i++ {
 		name := "cleaner[" + strconv.Itoa(i) + "]";
@@ -57,7 +59,7 @@ func main() {
 
 	go loadScan()
 	loadClean()
-
+	//	}
 }
 
 func getremoteip() string {
