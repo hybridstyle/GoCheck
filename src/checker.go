@@ -147,7 +147,7 @@ func checkProxy(proxy string, timeout int) bool {
 		},
 	}
 
-	req, err := http.NewRequest("GET", checkUrl, nil)
+	req, err := http.NewRequest("HEAD", checkUrl, nil)
 	req.Header.Add("Accept", "*/*")
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36")
 
@@ -160,7 +160,7 @@ func checkProxy(proxy string, timeout int) bool {
 	}
 	defer resp.Body.Close()
 
-	ioutil.ReadAll(resp.Body)
+//	ioutil.ReadAll(resp.Body)
 
 	headers := resp.Header["Server"]
 	if headers != nil {
