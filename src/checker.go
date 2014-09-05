@@ -15,7 +15,7 @@ import (
 	"net/http"
 	"net/url"
 	"crypto/tls"
-	//	"io/ioutil"
+	"io/ioutil"
 )
 
 const (
