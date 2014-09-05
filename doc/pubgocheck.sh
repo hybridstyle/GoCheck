@@ -11,7 +11,7 @@ git pull
 rsync -az --delete --exclude=".git" $SVN_PATH/* $BUILD_PATH/
 
 cp -f $BUILD_PATH/src/*.go $DST_PATH
-cp -f $BUILD_PATH/doc/pubgocheck.sh /macken
+cp -f $BUILD_PATH/doc/pubgocheck.sh /macken/
 
 cd $DST_PATH
 go build checker.go
