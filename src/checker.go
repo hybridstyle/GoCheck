@@ -15,7 +15,7 @@ import (
 	"net/http"
 	"net/url"
 	"crypto/tls"
-//	"io/ioutil"
+	//	"io/ioutil"
 )
 
 const (
@@ -155,7 +155,7 @@ func checkProxy(proxy string, timeout int) bool {
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		fmt.Printf("checkproxy error %s\n", err)
+		fmt.Printf("checkproxy error %s %s\n", proxy, err)
 		return false
 	}
 	defer resp.Body.Close()
