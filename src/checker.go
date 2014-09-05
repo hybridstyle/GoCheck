@@ -19,12 +19,12 @@ import (
 )
 
 const (
-	checkUrl string = "http://www.baidu.com"
-	size     int    = 5000
-	redisIP  string = "10.130.210.245"
-	bws string      = "BWS"
-	checksize int   = 2 * size
-	cleansize int   = 50
+	checkUrl string    = "http://www.baidu.com"
+	threadsize     int = 5000
+	redisIP  string    = "10.130.210.245"
+	bws string         = "BWS"
+	checksize int      = 2 * threadsize
+	cleansize int      = 50
 )
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
@@ -77,9 +77,8 @@ func main() {
 	go getproxy(checkpool)
 	go writeclean(cleanpool)
 
-	for i := 0; i < size; i++ {
+	for i := 0; i < threadsize; i++ {
 		name := "checker[" + strconv.Itoa(i) + "]"
-		//		chs[i] = make(chan int)
 		go check(name, chs, checkpool, cleanpool)
 	}
 	count := 1
@@ -87,7 +86,7 @@ func main() {
 		select {
 		case <-chs:
 			count = count+1
-			if count == size {
+			if count == threadsize {
 				close(chs)
 				return
 			}
@@ -142,15 +141,15 @@ func checkProxy(proxy string, timeout int) bool {
 			},
 			ResponseHeaderTimeout: time.Duration(timeout) * time.Second,
 			DisableKeepAlives: true,
-//			DisableCompression: true,
+			//			DisableCompression: true,
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 			TLSHandshakeTimeout: 10 * time.Second,
 		},
 	}
 
-	req, err := http.NewRequest("Get", checkUrl, nil)
-	req.Header.Add("Accept","*/*")
-	req.Header.Add("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36")
+	req, err := http.NewRequest("GET", checkUrl, nil)
+	req.Header.Add("Accept", "*/*")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.94 Safari/537.36")
 
 	req.Close = true
 
