@@ -21,7 +21,7 @@ import (
 const (
 	checkUrl string    = "http://www.baidu.com"
 	threadsize     int = 5000
-	redisIP  string    = "10.130.210.245"
+	redisIP  string    = "10.130.209.178"
 	bws string         = "BWS"
 	checksize int      = 2 * threadsize
 	cleansize int      = 50

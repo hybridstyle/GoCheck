@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	redisIP string      = "192.168.0.240"
+	redisIP string      = "10.130.209.178"
 	mysqlIP string      = redisIP
 	scaninternal int64  = 1 * 60 * 1000
 	checkinternal int64 = 30 * 1000
