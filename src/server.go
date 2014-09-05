@@ -24,7 +24,7 @@ const (
 	scannerqueue string = "scannerqueue"
 	cleanqueue string   = "cleanqueue"
 	cleanurl string     = "http://20140507.ip138.com/ic.asp"
-	ipszie int          = 5
+	ipszie int          = 50
 	threhold int64      = 10
 
 	cleanthread   = 5
