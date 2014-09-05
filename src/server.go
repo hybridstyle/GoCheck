@@ -27,7 +27,7 @@ const (
 	ipszie int          = 50
 	threhold int64      = 10
 
-	cleanthread   = 50
+	cleanthread   = 100
 	cleanpoolsize = 50
 
 	ANONY_ERROR int      = 0
