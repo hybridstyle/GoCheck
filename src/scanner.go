@@ -18,7 +18,7 @@ const (
 	mysqlIP string    = redisIP
 	scansize int      = 100
 	resultsize int    = 10
-	threadsize int    = 1
+	threadsize int    = 5
 	path string       = "/macken/proxycheck/results"
 	checkqueue string = "checkqueue"
 	scanqueue string  = "scannerqueue"
