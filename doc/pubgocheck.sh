@@ -16,6 +16,7 @@ cp -f $BUILD_PATH/doc/pubgocheck.sh /macken/
 
 
 cd $DST_PATH
+rm -rf checker scanner server
 go build checker.go
 go build scanner.go
 go build server.go
