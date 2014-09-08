@@ -33,6 +33,8 @@ const (
 	ANONY_ERROR int      = 0
 	ANONY_ELITE int      = 1
 	ANONY_TRANSPARNT int = 2
+
+	SCAN_PORTS = "scanports"
 )
 
 func main() {
@@ -46,6 +48,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	db , err := sql.Open("mysql", "proxy:proxy@tcp("+mysqlIP+":3306)/proxy")
+	if err != nil {
+		fmt.Printf("open mysql error %s", err)
+	}
+
+
+
 	//	anony := verifyproxy("222.85.103.104:81", 20, "123")
 	//	fmt.Println("anony:", anony)
 
@@ -53,12 +62,12 @@ func main() {
 	cleanpool := make(chan string, cleanpoolsize)
 	for i := 0; i < cleanthread; i++ {
 		name := "cleaner[" + strconv.Itoa(i) + "]";
-		go cleanproxy(name, cleanpool, remoteip)
+		go cleanproxy(name, cleanpool, remoteip, db)
 	}
 	go loadcleanpool(cleanpool)
 
-	go loadScan()
-	loadClean()
+	go loadScan(db)
+	loadClean(db)
 	//	}
 }
 
@@ -120,7 +129,7 @@ func loadcleanpool(cleanpool chan string) {
 	}
 }
 
-func cleanproxy(name string, cleanpool chan string, remoteip string) {
+func cleanproxy(name string, cleanpool chan string, remoteip string, db *sql.DB) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Printf("cleanproxy error %s", err)
@@ -129,10 +138,6 @@ func cleanproxy(name string, cleanpool chan string, remoteip string) {
 
 	fmt.Printf("%s start\n", name)
 
-	db , err := sql.Open("mysql", "proxy:proxy@tcp("+mysqlIP+":3306)/proxy")
-	if err != nil {
-		fmt.Printf("open mysql error %s", err)
-	}
 	delSQL := "delete from valid_proxy where ip=? and port=?"
 	updateSQL := "insert into valid_proxy(ip,port,anony,create_time,update_time)values(?,?,?,?,?) on duplicate key update anony=?,update_time=?"
 
@@ -230,8 +235,8 @@ func proxy(proxyInfo string) string {
 	return tmp
 }
 
-func loadScan() {
-	ports := []string{"81", "90", "808", "1080", "3128", "8000", "8080", "8123", "8888", "18186"}
+func loadScan(db *sql.DB) {
+	//	ports := []string{"81", "90", "808", "1080", "3128", "8000", "8080", "8123", "8888", "18186"}
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Printf("loadScan error %s", err)
@@ -245,10 +250,10 @@ func loadScan() {
 		fmt.Println("failed to create redis client", e)
 	}
 
-	db , err := sql.Open("mysql", "proxy:proxy@tcp("+mysqlIP+":3306)/proxy")
-	if err != nil {
-		fmt.Printf("open mysql error %s", err)
-	}
+	//	db , err := sql.Open("mysql", "proxy:proxy@tcp("+mysqlIP+":3306)/proxy")
+	//	if err != nil {
+	//		fmt.Printf("open mysql error %s", err)
+	//	}
 
 	//update segment set update_time=0
 	sql := "select ip from segment where update_time < ? order by update_time"
@@ -257,6 +262,8 @@ func loadScan() {
 
 		size, _ := client.Llen(scannerqueue)
 		if size < threhold {
+			scanports := getPorts(db)
+			ports := strings.Split(scanports, "|")
 			now := now() - scaninternal
 			fmt.Println(now)
 			rows, error := db.Query(sql, now)
@@ -288,7 +295,15 @@ func loadScan() {
 	}
 }
 
-func loadClean() {
+func getPorts(db *sql.DB) (string) {
+	sql := "select config_value from config where config_name=?"
+	row := db.QueryRow(sql, SCAN_PORTS)
+	var ports string
+	row.Scan(&ports)
+	return ports
+}
+
+func loadClean(db *sql.DB) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Printf("loadClean error %s", err)
@@ -302,10 +317,10 @@ func loadClean() {
 		fmt.Println("failed to create redis client", e)
 	}
 
-	db , err := sql.Open("mysql", "proxy:proxy@tcp("+mysqlIP+":3306)/proxy")
-	if err != nil {
-		fmt.Printf("open mysql error %s", err)
-	}
+	//	db , err := sql.Open("mysql", "proxy:proxy@tcp("+mysqlIP+":3306)/proxy")
+	//	if err != nil {
+	//		fmt.Printf("open mysql error %s", err)
+	//	}
 
 	sql := "select ip,port from valid_proxy where update_time < ? order by update_time"
 
