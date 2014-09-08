@@ -87,21 +87,41 @@ func scan(name string, scanpool chan string, resultpool chan string) {
 			}
 			scanner := bufio.NewScanner(f)
 			index := 0
+			m := make(map[string]int)
 			for scanner.Scan() {
 				if index > 0 {
-					text := strings.Replace(scanner.Text(), ",", "|", -1)
+					scannerText := scanner.Text()
+					key := getkey(scannerText)
+					val, ok := m[key]
+					if ok {
+						m[key] = val+1
+					}else {
+						m[key] = 0
+					}
+					text := strings.Replace(scannerText, ",", "|", -1)
 					client.Lpush(checkqueue, []byte(text))
 				}
 				index = index+1
 			}
 
-			val := value + "|" + strconv.Itoa(index)
-		resultpool<-val
+		for k, v := range m {
+			val := k + "|" + strconv.Itoa(v)
+			resultpool<-val
+		}
 			f.Close()
+
+			//			val := value + "|" + strconv.Itoa(index)
+			//		resultpool<-val
+			//			f.Close()
 
 		}
 	}
 
+}
+
+func getkey(text string) (string) {
+	arr := strings.Split(text, ".")
+	return arr[0] + "." + arr[1] + ".0.0/16"
 }
 
 func getscan(pool chan string) {
