@@ -191,7 +191,7 @@ func getproxy(pool chan string) {
 	for {
 		value, e := client.Lpop("checkqueue")
 		if e != nil {
-			client, e := redis.NewSynchClientWithSpec(config)
+			client, _= redis.NewSynchClientWithSpec(config)
 			fmt.Println("get redis value error", e)
 			time.Sleep(1 * time.Second)
 			continue
