@@ -150,6 +150,16 @@ func cleanproxy(name string, cleanpool chan string, remoteip string, db *sql.DB)
 			ip := arr[0]
 			port := arr[1]
 			anony := verifyproxy(value, 20, remoteip)
+			count := 0
+			for count < 2 {
+				if anony == ANONY_ERROR {
+					time.Sleep(5 * time.Second)
+					anony = verifyproxy(value, 20, remoteip)
+				}else {
+					break;
+				}
+				count = count+1
+			}
 			fmt.Printf("%s:%s anony:%d\n", ip, port, anony)
 			if anony == 0 {
 				db.Exec(delSQL, ip, port)
