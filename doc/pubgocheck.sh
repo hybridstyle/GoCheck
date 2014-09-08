@@ -14,10 +14,12 @@ cp -f $BUILD_PATH/src/*.go $DST_PATH
 cp -f $BUILD_PATH/doc/*.sh $DST_PATH
 cp -f $BUILD_PATH/doc/pubgocheck.sh /macken/
 
+GOROOT="/usr/local/go"
+GOPATH="/macken/go/"
 
 cd $DST_PATH
 rm -rf checker scanner server
-go build checker.go
-go build scanner.go
-go build server.go
+$GOROOT/bin/go build checker.go
+$GOROOT/bin/go build scanner.go
+$GOROOT/bin/go build server.go
 
