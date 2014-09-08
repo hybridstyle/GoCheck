@@ -193,7 +193,7 @@ func getproxy(pool chan string) {
 		if e != nil {
 			fmt.Println("get redis value error", e)
 			time.Sleep(1 * time.Second)
-			client, _ = redis.NewSynchClientWithSpec(config)
+//			client, _ = redis.NewSynchClientWithSpec(config)
 			continue
 		}
 
