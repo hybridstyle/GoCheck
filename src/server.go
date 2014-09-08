@@ -273,6 +273,7 @@ func loadScan(db *sql.DB) {
 		size, _ := client.Llen(scannerqueue)
 		if size < threhold {
 			scanports := getPorts(db)
+			fmt.Println("scanports:", scanports)
 			ports := strings.Split(scanports, "|")
 			now := now() - scaninternal
 			fmt.Println(now)
