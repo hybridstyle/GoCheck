@@ -177,20 +177,22 @@ func writeresult(writepool chan string) {
 	for {
 		select {
 		case value := <-writepool:
+
 			vals := strings.Split(value, "|")
 			nowtime := now()
 			_, err := db.Exec(scansql, vals[1], vals[0], vals[2], nowtime)
 			if err != nil {
 				fmt.Println("scansql error %s", err)
 			}
-			ips := vals[1]
-			ipsarr := strings.Split(ips, " ")
-		for _, s := range ipsarr {
-			_, err := db.Exec(updatesql, nowtime, s)
-			if err != nil {
-				fmt.Println("updatesql error %s", err)
-			}
-		}
+			db.Exec(updatesql,nowtime,vals[1])
+//			ips := vals[1]
+//			ipsarr := strings.Split(ips, " ")
+//		for _, s := range ipsarr {
+//			_, err := db.Exec(updatesql, nowtime, s)
+//			if err != nil {
+//				fmt.Println("updatesql error %s", err)
+//			}
+//		}
 
 		}
 	}
