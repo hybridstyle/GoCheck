@@ -106,6 +106,7 @@ func scan(name string, scanpool chan string, resultpool chan string) {
 
 		for k, v := range m {
 			val := k + "|" + strconv.Itoa(v)
+			fmt.Println("val:", val)
 			resultpool<-val
 		}
 			f.Close()
