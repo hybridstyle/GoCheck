@@ -15,7 +15,7 @@ import (
 	"net/http"
 	"net/url"
 	"crypto/tls"
-//	"io/ioutil"
+	//	"io/ioutil"
 )
 
 const (
@@ -160,7 +160,7 @@ func checkProxy(proxy string, timeout int) bool {
 	}
 	defer resp.Body.Close()
 
-//	ioutil.ReadAll(resp.Body)
+	//	ioutil.ReadAll(resp.Body)
 
 	headers := resp.Header["Server"]
 	if headers != nil {
@@ -191,7 +191,9 @@ func getproxy(pool chan string) {
 	for {
 		value, e := client.Lpop("checkqueue")
 		if e != nil {
+			client, e := redis.NewSynchClientWithSpec(config)
 			fmt.Println("get redis value error", e)
+			time.Sleep(1 * time.Second)
 			continue
 		}
 
