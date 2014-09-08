@@ -182,7 +182,7 @@ func getproxy(pool chan string) {
 		}
 	}()
 
-	config := redis.DefaultSpec().Host(redisIP).Port(6379).Db(0)
+	config := redis.DefaultSpec().Host(redisIP).Port(6379).Db(0).Heartbeat(time.Duration(60) * time.Second)
 	client, e := redis.NewSynchClientWithSpec(config)
 	if e != nil {
 		fmt.Println("failed to create redis client", e)
@@ -193,7 +193,7 @@ func getproxy(pool chan string) {
 		if e != nil {
 			fmt.Println("get redis value error", e)
 			time.Sleep(1 * time.Second)
-//			client, _ = redis.NewSynchClientWithSpec(config)
+			//			client, _ = redis.NewSynchClientWithSpec(config)
 			continue
 		}
 
@@ -212,7 +212,7 @@ func writeclean(cleanpool chan string) {
 			fmt.Printf("writeclean error %s", err)
 		}
 	}()
-	config := redis.DefaultSpec().Host(redisIP).Port(6379).Db(0)
+	config := redis.DefaultSpec().Host(redisIP).Port(6379).Db(0).Heartbeat(time.Duration(60) * time.Second)
 	client, e := redis.NewSynchClientWithSpec(config)
 	if e != nil {
 		fmt.Println("failed to create redis client", e)
